@@ -27,9 +27,6 @@ def modify_strategy_1(tail, desired_result):
     if tokens_sum(new_tail) == desired_result:
         return new_tail
 
-    return []
-
-def modify_strategy_2(tail, desired_result):
     new_tail = []
     op, value = tail[0]
     new_tail.append((op, value + '3'))
@@ -40,14 +37,71 @@ def modify_strategy_2(tail, desired_result):
         return new_tail
 
     return []
-    
+
+def modify_strategy_2(tail, desired_result):
+    new_tail = []
+    new_tail.append(tail[0])
+    new_tail.append(('+', '3'))
+    new_tail.append(('+', '2'))
+    new_tail += tail[1:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    new_tail = []
+    new_tail.append(tail[0])
+    new_tail.append(('-', '3'))
+    new_tail.append(('+', '2'))
+    new_tail += tail[1:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    new_tail = []
+    new_tail.append(tail[0])
+    new_tail.append(('+', '3'))
+    new_tail.append(('-', '2'))
+    new_tail += tail[1:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    return []
+
+def modify_strategy_3(tail, desired_result):
+    if len(tail) <= 1:
+        return []
+
+    op, value = tail[1]
+    new_tail = []
+    new_tail.append(tail[0])
+    new_tail.append(('+', '3'))
+    new_tail.append((op, '2' + value ))
+    if len(tail) >= 2:
+        new_tail += tail[2:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    new_tail = []
+    new_tail.append(tail[0])
+    new_tail.append(('-', '3'))
+    new_tail.append((op, '2' + value))
+    if len(tail) >= 2:
+        new_tail += tail[2:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    return []
 
 def modify_tail(tail, desired_result):
     if tokens_sum(tail) == desired_result:
         return tail
 
     md_strgs = [modify_strategy_1, 
-                modify_strategy_2]
+                modify_strategy_2,
+                modify_strategy_3]
 
     for md_strg in md_strgs:
         result = md_strg(tail, desired_result)
@@ -60,6 +114,9 @@ def modify_tail(tail, desired_result):
 def calculate_expression(ariphmetic_expr):
     tokens = parse_expression(ariphmetic_expr)
     head, tail = split_tokens(tokens)
+    if len(tail) == 0:
+       raise RuntimeException("Cannot find insert position") 
+
     head_sum = tokens_sum(head)
     modified_tail = modify_tail(tail, 200 - head_sum)
     return tokens_to_str(head + modified_tail)
