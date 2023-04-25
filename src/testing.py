@@ -17,3 +17,17 @@ class CalculationTestCase(unittest.TestCase):
         result = calculate_expression(test_case_input)
         self.assertEqual(result, expected_result,
                         'valid case failed')
+
+    def test_fail_case(self):
+        try:
+            test_case_input = '98'
+            calculate_expression(test_case_input)
+        except Exception as ex:
+            self.assertEqual(repr(ex), "Exception('Solution not found')")
+
+
+        try:
+            for test_case_input in ['', 'dsagasd']:
+                calculate_expression(test_case_input)
+        except Exception as ex:
+            self.assertEqual(repr(ex), "Exception('Failed parse expression')")
