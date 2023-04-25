@@ -10,5 +10,10 @@ class CalculationTestCase(unittest.TestCase):
 
         self.assertEqual(result, expected_result,
                         'example case failed')
-        self.assertEqual(eval(result), 200)
+        self.assertEqual(eval(result), 200, 
+                        'expression doesn\'t equal 200')
 
+        test_case_input = '98 + 76 - 5 + 43 - 2 - 10'
+        result = calculate_expression(test_case_input)
+        self.assertEqual(result, expected_result,
+                        'valid case failed')

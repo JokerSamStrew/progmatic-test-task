@@ -17,11 +17,23 @@ def tokens_sum(tokens):
 def tokens_to_str(tokens):
     return ' '.join([op + ' ' + value for op, value in tokens]).strip()
 
-def first_modify_stratagy(tail, desired_result):
+def modify_strategy_1(tail, desired_result):
     new_tail = []
     op, value = tail[0]
     new_tail.append((op, value + '3'))
     new_tail.append(('-', '2'))
+    new_tail += tail[1:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    return []
+
+def modify_strategy_2(tail, desired_result):
+    new_tail = []
+    op, value = tail[0]
+    new_tail.append((op, value + '3'))
+    new_tail.append(('+', '2'))
     new_tail += tail[1:]
 
     if tokens_sum(new_tail) == desired_result:
@@ -34,10 +46,13 @@ def modify_tail(tail, desired_result):
     if tokens_sum(tail) == desired_result:
         return tail
 
-    result = first_modify_stratagy(tail, desired_result)
-    if len(result) > 0:
-        return result
+    md_strgs = [modify_strategy_1, 
+                modify_strategy_2]
 
+    for md_strg in md_strgs:
+        result = md_strg(tail, desired_result)
+        if len(result) > 0:
+            return result
 
     return []
 
@@ -47,10 +62,7 @@ def calculate_expression(ariphmetic_expr):
     head, tail = split_tokens(tokens)
     head_sum = tokens_sum(head)
     modified_tail = modify_tail(tail, 200 - head_sum)
-
-    print(head_sum, modified_tail)
-
     return tokens_to_str(head + modified_tail)
 
 if __name__ == "__main__":
-   print(calculate_expression(input()))
+    print(calculate_expression(input('Enter expression: ')))
