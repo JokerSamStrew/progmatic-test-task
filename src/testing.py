@@ -20,7 +20,7 @@ class CalculationTestCase(unittest.TestCase):
 
     def test_fail_case(self):
         try:
-            test_case_input = '98'
+            test_case_input = ['98', '98 + 76 - 5 + 43 - 2']
             calculate_expression(test_case_input)
         except Exception as ex:
             self.assertEqual(repr(ex), "Exception('Solution not found')")

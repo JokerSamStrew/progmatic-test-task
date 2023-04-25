@@ -101,7 +101,7 @@ def modify_strategy_4(tail, desired_result):
 
     op, value = tail[0]
     new_tail = []
-    new_tail.append(op, value + '3')
+    new_tail.append((op, value + '3'))
     op, value = tail[1]
     new_tail.append((op, '2' + value ))
     if len(tail) >= 2:
