@@ -1,27 +1,56 @@
 import re
 
+def parse_expression(expr):
+    return re.findall(r'([+-])?\s*(\d+)', expr)
 
-def possible_insertion_index(expr):
-    for i in range(4,9):
-        index = expr.rfind(str(i))
-        if index != -1:
-            return index
-    return -1
+def split_tokens(tokens):
+    for i in range(4, 9):
+        index = 0
+        for op, value in tokens:
+            if value.find(str(i)) != -1:
+                return tokens[:index], tokens[index:] 
+            index += 1
 
-def split_expression(index, expr):
-    head, tail = expr[:index], expr[index:]
+def tokens_sum(tokens):
+    return sum([int(op + value) for op, value in tokens])
 
-    return head, tail
+def tokens_to_str(tokens):
+    return ' '.join([op + ' ' + value for op, value in tokens]).strip()
+
+def first_modify_stratagy(tail, desired_result):
+    new_tail = []
+    op, value = tail[0]
+    new_tail.append((op, value + '3'))
+    new_tail.append(('-', '2'))
+    new_tail += tail[1:]
+
+    if tokens_sum(new_tail) == desired_result:
+        return new_tail
+
+    return []
+    
+
+def modify_tail(tail, desired_result):
+    if tokens_sum(tail) == desired_result:
+        return tail
+
+    result = first_modify_stratagy(tail, desired_result)
+    if len(result) > 0:
+        return result
+
+
+    return []
+
 
 def calculate_expression(ariphmetic_expr):
-    if eval(ariphmetic_expr) == 200:
-        return ariphmetic_expr
+    tokens = parse_expression(ariphmetic_expr)
+    head, tail = split_tokens(tokens)
+    head_sum = tokens_sum(head)
+    modified_tail = modify_tail(tail, 200 - head_sum)
 
-    index = possible_insertion_index(ariphmetic_expr)
-    if index == -1:
-        raise RuntimeException('Not found possible insertion places')
+    print(head_sum, modified_tail)
 
-    return '98 + 76 - 5 + 43 - 2 - 10' 
+    return tokens_to_str(head + modified_tail)
 
 if __name__ == "__main__":
    print(calculate_expression(input()))
